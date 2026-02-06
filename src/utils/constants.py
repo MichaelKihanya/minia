@@ -1,0 +1,30 @@
+# Window settings
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
+FPS = 60
+
+# Colors
+PINK = (255, 192, 203)
+LIGHT_PINK = (255, 182, 193)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GOLD = (255, 215, 0)
+SKIN_COLOR = (255, 218, 185)
+DRESS_COLOR = (255, 105, 180)
+HAIR_COLOR = (139, 69, 19)
+GRASS_GREEN = (34, 139, 34)  # For ground
+SKY_BLUE = (135, 206, 235)   # For background
+
+# Game settings
+PLAYER_SPEED = 5
+JUMP_FORCE = -15
+GRAVITY = 0.8
+YOGA_HOLD_TIME = 3
+DIALOGUE_DURATION = 2
+
+# World settings
+TILE_SIZE = 32
+WORLD_WIDTH = 3000  # Much wider than screen for scrolling
+PLATFORM_HEIGHT = 50
+PLATFORM_SPACING = 200  # Space between platforms
+PLATFORM_WIDTH = 200 
