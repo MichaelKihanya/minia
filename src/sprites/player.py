@@ -94,66 +94,77 @@ class Player(pygame.sprite.Sprite):
         self.warrior_pose = create_warrior_pose_sprite()
         self.image = self.original_image
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
-        self.speed = PLAYER_SPEED
-        self.jumping = False
-        self.velocity_y = 0
-        self.gravity = GRAVITY
+        
+        # Grid-based position (in grid coordinates, will convert to pixels)
+        self.grid_x = x
+        self.grid_y = y
+        self.rect.x = x * 32
+        self.rect.y = y * 32
+        
+        self.facing_right = True
         self.doing_yoga = False
         self.yoga_timer = 0
-        self.facing_right = True
         self.current_pose = None
-        self.on_ground = False
+        
+        # Movement animation
+        self.move_progress = 0  # 0 to 1, for smooth movement between tiles
+        self.is_moving = False
+        self.move_direction = None  # (dx, dy)
+        self.move_speed = 0.2  # tiles per frame
 
-    def update(self, platforms):
+    def update(self, platforms=None):
+        """Update player with grid-based movement"""
         keys = pygame.key.get_pressed()
         
         if not self.doing_yoga:
-            # Horizontal movement
+            # Handle grid movement
+            move_x = 0
+            move_y = 0
+            
             if keys[pygame.K_LEFT]:
-                self.rect.x -= self.speed
+                move_x = -1
                 self.facing_right = False
-            if keys[pygame.K_RIGHT]:
-                self.rect.x += self.speed
+            elif keys[pygame.K_RIGHT]:
+                move_x = 1
                 self.facing_right = True
+            elif keys[pygame.K_UP]:
+                move_y = -1
+            elif keys[pygame.K_DOWN]:
+                move_y = 1
+            
+            # Move to adjacent tile if not already moving
+            if (move_x != 0 or move_y != 0) and not self.is_moving:
+                # Check bounds (20x30 tile world)
+                new_x = self.grid_x + move_x
+                new_y = self.grid_y + move_y
                 
+                if 0 <= new_x < 20 and 0 <= new_y < 30:
+                    self.grid_x = new_x
+                    self.grid_y = new_y
+                    self.is_moving = True
+                    self.move_progress = 0
+                    self.move_direction = (move_x, move_y)
+            
+            # Animate movement between tiles
+            if self.is_moving:
+                self.move_progress += self.move_speed
+                if self.move_progress >= 1:
+                    self.move_progress = 1
+                    self.is_moving = False
+            
+            # Update pixel position based on grid and animation progress
+            self.rect.x = self.grid_x * 32
+            self.rect.y = self.grid_y * 32
+            
             # Flip sprite based on direction
             self.image = pygame.transform.flip(self.original_image, not self.facing_right, False)
-                
-            # Jumping
-            if keys[pygame.K_SPACE] and self.on_ground:
-                self.velocity_y = JUMP_FORCE
-                self.jumping = True
-                self.on_ground = False
-                
-            # Apply gravity
-            self.velocity_y += self.gravity
-            self.rect.y += self.velocity_y
-            
-            # Platform collisions
-            self.on_ground = False
-            for platform in platforms:
-                if self.rect.colliderect(platform.rect):
-                    # Bottom collision
-                    if self.velocity_y > 0 and self.rect.bottom > platform.rect.top:
-                        self.rect.bottom = platform.rect.top
-                        self.velocity_y = 0
-                        self.jumping = False
-                        self.on_ground = True
-                    # Top collision
-                    elif self.velocity_y < 0 and self.rect.top < platform.rect.bottom:
-                        self.rect.top = platform.rect.bottom
-                        self.velocity_y = 0
         else:
+            # Yoga animation
             self.yoga_timer += 1/FPS
             if self.yoga_timer >= YOGA_HOLD_TIME:
                 self.doing_yoga = False
                 self.yoga_timer = 0
                 self.image = pygame.transform.flip(self.original_image, not self.facing_right, False)
-            
-        # Keep player in world bounds
-        self.rect.clamp_ip(pygame.Rect(0, 0, WORLD_WIDTH, WINDOW_HEIGHT))
 
     def start_yoga_pose(self, pose_type):
         self.doing_yoga = True

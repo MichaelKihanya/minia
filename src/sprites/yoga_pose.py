@@ -3,24 +3,25 @@ import random
 from src.utils.constants import *
 
 def create_pose_indicator(pose_type):
-    sprite = pygame.Surface((40, 40), pygame.SRCALPHA)
+    sprite = pygame.Surface((32, 32), pygame.SRCALPHA)
     
-    # Draw a circle background
-    pygame.draw.circle(sprite, PINK, (20, 20), 15)
+    # Draw a square background with rounded corners effect
+    pygame.draw.rect(sprite, PINK, (4, 4, 24, 24))
     
-    # Draw pose-specific symbol
+    # Draw pose-specific symbol centered
     if pose_type == 'tree':
-        # Draw a tree symbol
-        pygame.draw.rect(sprite, WHITE, (18, 10, 4, 20))  # trunk
-        pygame.draw.circle(sprite, WHITE, (20, 8), 8)     # leaves
+        # Draw a tree symbol - more square/geometric
+        pygame.draw.rect(sprite, WHITE, (14, 8, 4, 16))  # trunk
+        pygame.draw.rect(sprite, WHITE, (8, 12, 16, 4))   # top of tree (cross)
     elif pose_type == 'warrior':
-        # Draw a warrior symbol
-        pygame.draw.line(sprite, WHITE, (10, 20), (30, 20), 3)  # arms
-        pygame.draw.line(sprite, WHITE, (20, 10), (20, 30), 3)  # body
-        pygame.draw.line(sprite, WHITE, (15, 30), (25, 30), 3)  # legs
+        # Draw a warrior symbol - more square/geometric
+        pygame.draw.rect(sprite, WHITE, (10, 14, 12, 2))  # arms
+        pygame.draw.rect(sprite, WHITE, (14, 8, 4, 16))   # body/spine
+        pygame.draw.rect(sprite, WHITE, (10, 22, 4, 4))   # left leg
+        pygame.draw.rect(sprite, WHITE, (18, 22, 4, 4))   # right leg
     else:  # mountain pose
-        # Draw a mountain symbol
-        pygame.draw.polygon(sprite, WHITE, [(10, 30), (20, 10), (30, 30)])
+        # Draw a mountain symbol - triangle made from squares
+        pygame.draw.polygon(sprite, WHITE, [(8, 24), (16, 8), (24, 24)])
     
     return sprite
 

@@ -3,24 +3,29 @@ import math
 import random
 from src.utils.constants import *
 
-def create_note_sprite():
-    sprite = pygame.Surface((20, 20), pygame.SRCALPHA)
+def create_taco_sprite():
+    sprite = pygame.Surface((24, 24), pygame.SRCALPHA)
     
-    # Draw note head
-    pygame.draw.circle(sprite, GOLD, (10, 10), 5)
+    # Draw taco shell (yellow/gold)
+    shell_color = (220, 170, 90)
+    pygame.draw.polygon(sprite, shell_color, [(3, 12), (12, 5), (21, 12), (12, 19)])
     
-    # Draw note stem
-    pygame.draw.rect(sprite, GOLD, (12, 2, 2, 16))
+    # Draw lettuce (green)
+    lettuce_color = (140, 160, 100)
+    pygame.draw.polygon(sprite, lettuce_color, [(5, 12), (12, 8), (19, 12), (12, 16)])
     
-    # Draw note flag
-    pygame.draw.arc(sprite, GOLD, (12, 2, 8, 8), 0, math.pi * 2)
+    # Draw cheese (orange)
+    cheese_color = (255, 160, 80)
+    pygame.draw.circle(sprite, cheese_color, (10, 12), 2)
+    pygame.draw.circle(sprite, cheese_color, (14, 12), 2)
     
     return sprite
 
 class MusicalNote(pygame.sprite.Sprite):
+    """Taco collectible - renamed from MusicalNote for Tania"""
     def __init__(self, x, y):
         super().__init__()
-        self.image = create_note_sprite()
+        self.image = create_taco_sprite()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
